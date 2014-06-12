@@ -44,36 +44,45 @@ end
 
 
 def answer
-	File.open("shiritori_loop_sort.txt", "w") { |f|  
+	File.open("shiritori_loop_sort5_300.txt", "w") { |f|  
 		$ans_hash={}
 		$ans_hash[1] = {}
 		list = []
-		File.open("./pokemon_list.txt", "r") { |file|
+		File.open("./pokemon_list300.txt", "r") { |file|
 			file.each do |pokemon|
 				pokemon.chomp!
-				if pokemon.last!="ン"
-					list << pokemon
-					$ans_hash[1][pokemon[0]]||$ans_hash[1][pokemon[0]] = {}
-					($ans_hash[1][pokemon[0]][pokemon.last]||= []) << [pokemon]
-				end
+				list << pokemon if pokemon.last != "ン"
+				($ans_hash[1][pokemon[0]]||$ans_hash[1][pokemon[0]] = []) << [pokemon]
 			end
 		}
 		list.sort!
-		for n in 2..5
+		p $ans_hash
+		for n in 2..4
 			$ans_hash[n] = {}
 			list.each do |poke|
-				$ans_hash[n][poke[0]] || $ans_hash[n][poke[0]] = {}
-				($ans_hash[n-1][poke.last]||[]).each do |kumi|
-					kumi[1].each do |ar|
-						unless ar.include?(poke)
-							($ans_hash[n][poke[0]][kumi[0]]||=[])<<([poke]+ar)
-						end
+				$ans_hash[n][poke[0]]||$ans_hash[n][poke[0]] = []
+				($ans_hash[n-1][poke.last]||[]).each do |ar|
+					unless ar.include?(poke)
+						$ans_hash[n][poke[0]]<<([poke]+ar)
 					end
 				end
 				p [n,poke]
 			end
-#			p $ans_hash
+		#	p $ans_hash
 		end
+
+		n = 5
+		$ans_hash[n] = {}
+		list.each do |poke|
+			p [n,poke]
+			$ans_hash[n][poke[0]]||$ans_hash[n][poke[0]]={}
+			($ans_hash[n-1][poke.last]||[]).each do |ar|
+				unless ar.include?(poke)
+					($ans_hash[n][poke[0]+ar[-1].last]||$ans_hash[n][poke[0]+ar[-1].last]=[]) <<([poke]+ar)					
+				end
+			end
+		end
+#			p $ans_hash
 		n=6
 		$sum = 0
 		list.each do |poke|
@@ -81,7 +90,7 @@ def answer
 			unless poke.smaller?
 				next
 			end
-			(($ans_hash[n-1][poke.last]||{})[poke[0]]||[]).each do |ar|
+			($ans_hash[n-1][poke.last+poke[0]]||{}).each do |ar|
 				if poke.sentou?(ar)
 					unless ar.include?(poke)
 						$sum += 1
