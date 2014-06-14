@@ -2,26 +2,12 @@
 t0 = Time.now
 class String
 	def last
+		large=["ア","イ","ウ","エ","オ","ツ","ヤ","ユ","ヨ"]
+		small=["ァ","ィ","ゥ","ェ","ォ","ッ","ャ","ュ","ョ"]
 		if self[-1] == "ー"
 			return self[0..-2].last
-		elsif self[-1] == "ァ"
-			return "ア"
-		elsif self[-1] == "ィ"
-			return "イ"
-		elsif self[-1] == "ゥ"
-			return "ウ"
-		elsif self[-1] == "ェ"
-			return "エ"
-		elsif self[-1] == "ォ"
-			return "オ"
-		elsif self[-1] == "ッ"
-			return "ツ"
-		elsif self[-1] == "ャ"
-			return "ヤ"
-		elsif self[-1] == "ュ"
-			return "ユ"
-		elsif self[-1] == "ョ"
-			return "ヨ"
+		elsif large.include?(self[-1])
+			return small[large.index(self[-1])]
 		else
 			return self[-1]
 		end
